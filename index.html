@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pedro AdeA — Editor de Vídeo</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600&family=Anton&display=swap" rel="stylesheet">
+<style>
+
+  :root{
+    --void:        #0a0808;
+    --void-deep:    #050404;
+    --surface:      #150f10;
+    --surface-line: rgba(242,235,231,0.08);
+    --red:          #c31e34;
+    --red-bright:   #ff3c56;
+    --red-dim:      #5c1420;
+    --paper:        #f2ebe7;
+    --muted:        #9a8f8c;
+  }
+
+  *{ margin:0; padding:0; box-sizing:border-box; }
+
+  html{ scroll-behavior:smooth; }
+
+  body{
+    background: var(--void);
+    color: var(--paper);
+    font-family: 'Archivo', sans-serif;
+    overflow-x:hidden;
+    min-height:100vh;
+  }
+
+  /* ---------- fundo (imagem + blur) ---------- */
+
+  .bg-layer{
+    position:fixed;
+    inset:-6vh -6vw;
+    z-index:-2;
+    /*
+      TROQUE A LINHA ABAIXO PELA SUA FOTO/IMAGEM DE FUNDO:
+      background-image: url('sua-imagem.jpg');
+      Mantenha o mesmo background-size/position.
+      Sem imagem própria ainda, usamos um gradiente + textura como placeholder.
+    */
+    background-image:
+      radial-gradient(circle at 20% 15%, rgba(195,30,52,0.35), transparent 45%),
+      radial-gradient(circle at 85% 75%, rgba(140,10,25,0.28), transparent 50%),
+      linear-gradient(160deg, #1a0d0f 0%, #0a0808 55%, #030202 100%);
+    background-size: cover;
+    background-position: center;
+    filter: blur(38px);
+    transform: scale(1.08);
+  }
+
+  .bg-noise{
+    position:fixed;
+    inset:0;
+    z-index:-1;
+    opacity:0.05;
+    pointer-events:none;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='120' height='120'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
+  }
+
+  .bg-vignette{
+    position:fixed;
+    inset:0;
+    z-index:-1;
+    pointer-events:none;
+    background: radial-gradient(ellipse at center, transparent 40%, rgba(3,2,2,0.75) 100%);
+  }
+
+  /* ---------- layout geral ---------- */
+
+  .wrap{
+    max-width: 1080px;
+    margin: 0 auto;
+    padding: 0 28px;
+  }
+
+  header.top{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding: 32px 28px;
+    max-width: 1080px;
+    margin: 0 auto;
+  }
+
+  .mark{
+    font-family:'Anton', sans-serif;
+    font-size: 20px;
+    letter-spacing: 0.5px;
+    color: var(--paper);
+  }
+  .mark span{ color: var(--red-bright); }
+
+  nav.top-links{
+    display:flex;
+    gap: 28px;
+  }
+  nav.top-links a{
+    color: var(--muted);
+    text-decoration:none;
+    font-size: 14px;
+    transition: color .2s ease;
+  }
+  nav.top-links a:hover{ color: var(--paper); }
+
+  /* ---------- hero ---------- */
+
+  .hero{
+    padding: 90px 0 70px;
+  }
+
+  .hero-name{
+    font-family:'Anton', sans-serif;
+    font-weight: 400;
+    line-height: 0.86;
+    font-size: clamp(64px, 13vw, 148px);
+    color: var(--paper);
+    text-transform: uppercase;
+    letter-spacing: -1px;
+  }
+
+  .hero-name .accent{
+    color: var(--red);
+    -webkit-text-stroke: 1.5px var(--red-bright);
+  }
+
+  .hero-role{
+    margin-top: 26px;
+    max-width: 520px;
+    font-size: 18px;
+    line-height: 1.55;
+    color: var(--muted);
+  }
+
+  .hero-role strong{
+    color: var(--paper);
+    font-weight: 500;
+  }
+
+  .hero-tags{
+    display:flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 28px;
+  }
+  .hero-tags span{
+    font-size: 13px;
+    color: var(--paper);
+    border: 1px solid var(--surface-line);
+    background: rgba(195,30,52,0.08);
+    padding: 7px 14px;
+    border-radius: 3px;
+  }
+
+  /* ---------- divisor ---------- */
+
+  .rule{
+    height:1px;
+    background: linear-gradient(90deg, var(--red-dim), var(--surface-line) 60%, transparent);
+    margin: 10px 0 60px;
+  }
+
+  /* ---------- seção trabalhos ---------- */
+
+  section.work{
+    padding-bottom: 90px;
+  }
+
+  .work-heading{
+    display:flex;
+    justify-content:space-between;
+    align-items:flex-end;
+    margin-bottom: 34px;
+    gap: 20px;
+    flex-wrap: wrap;
+  }
+
+  .work-heading h2{
+    font-family:'Anton', sans-serif;
+    font-weight:400;
+    font-size: 34px;
+    text-transform: uppercase;
+    letter-spacing: -0.5px;
+  }
+
+  .work-heading p{
+    color: var(--muted);
+    font-size: 14px;
+    max-width: 320px;
+  }
+
+  .grid-2x2{
+    display:grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 18px;
+  }
+
+  .video-card{
+    position:relative;
+    border-radius: 4px;
+    overflow:hidden;
+    border: 1px solid var(--surface-line);
+    background: var(--surface);
+    aspect-ratio: 16/10;
+  }
+
+  .video-card video{
+    width:100%;
+    height:100%;
+    object-fit: cover;
+    display:block;
+    background: #100a0b;
+  }
+
+  .video-card .tag{
+    position:absolute;
+    top: 14px;
+    left: 14px;
+    font-size: 12px;
+    color: var(--paper);
+    background: rgba(10,8,8,0.55);
+    backdrop-filter: blur(6px);
+    border: 1px solid rgba(242,235,231,0.15);
+    padding: 5px 10px;
+    border-radius: 3px;
+  }
+
+  .video-card .title-bar{
+    position:absolute;
+    left:0; right:0; bottom:0;
+    padding: 16px;
+    background: linear-gradient(to top, rgba(3,2,2,0.85), transparent);
+  }
+
+  .video-card .title-bar h3{
+    font-size: 16px;
+    font-weight: 500;
+  }
+
+  .video-card .title-bar p{
+    font-size: 12px;
+    color: var(--muted);
+    margin-top:2px;
+  }
+
+  /* ---------- contato ---------- */
+
+  section.contact{
+    padding-bottom: 100px;
+  }
+
+  .contact-heading h2{
+    font-family:'Anton', sans-serif;
+    font-weight:400;
+    font-size: 34px;
+    text-transform: uppercase;
+    letter-spacing: -0.5px;
+    margin-bottom: 12px;
+  }
+
+  .contact-heading p{
+    color: var(--muted);
+    max-width: 460px;
+    margin-bottom: 38px;
+    line-height: 1.6;
+  }
+
+  .contact-list{
+    display:grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+  }
+
+  .contact-item{
+    display:flex;
+    align-items:center;
+    gap: 14px;
+    padding: 18px 20px;
+    border: 1px solid var(--surface-line);
+    border-radius: 4px;
+    background: var(--surface);
+    text-decoration:none;
+    color: var(--paper);
+    transition: border-color .2s ease, background .2s ease;
+  }
+
+  .contact-item:hover{
+    border-color: var(--red);
+    background: rgba(195,30,52,0.09);
+  }
+
+  .contact-item svg{
+    width: 20px; height:20px;
+    fill: var(--red-bright);
+    flex-shrink:0;
+  }
+
+  .contact-item .c-label{
+    font-size: 11px;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  .contact-item .c-value{
+    font-size: 14px;
+    margin-top: 2px;
+    word-break: break-word;
+  }
+
+  footer{
+    padding: 30px 0 40px;
+    border-top: 1px solid var(--surface-line);
+    color: var(--muted);
+    font-size: 13px;
+    display:flex;
+    justify-content:space-between;
+    flex-wrap:wrap;
+    gap:10px;
+  }
+
+  /* ---------- responsivo ---------- */
+
+  @media (max-width: 720px){
+    header.top{ padding: 24px 20px; }
+    .hero{ padding: 50px 0 40px; }
+    .hero-role{ font-size:16px; }
+    .grid-2x2{ grid-template-columns: 1fr; }
+    .contact-list{ grid-template-columns: 1fr; }
+    .work-heading{ flex-direction:column; align-items:flex-start; }
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    html{ scroll-behavior:auto; }
+  }
+
+</style>
+</head>
+<body>
+
+<div class="bg-layer"></div>
+<div class="bg-noise"></div>
+<div class="bg-vignette"></div>
+
+<header class="top">
+  <div class="mark">PEDRO <span>ADEA</span></div>
+  <nav class="top-links">
+    <a href="#trabalhos">Trabalhos</a>
+    <a href="#contato">Contato</a>
+  </nav>
+</header>
+
+<main class="wrap">
+
+  <section class="hero">
+    <h1 class="hero-name">PEDRO<br><span class="accent">ADEA</span></h1>
+    <p class="hero-role">
+      Editor de vídeo focado em <strong>retenção</strong>: corto pra plataformas verticais,
+      estruturo VSLs que sustentam a atenção até a oferta, monto anúncios 100% gerados por IA
+      e finalizo vídeos longos sem perder ritmo.
+    </p>
+    <div class="hero-tags">
+      <span>Vídeos verticais</span>
+      <span>VSL</span>
+      <span>Ad Full AI</span>
+      <span>Vídeo longo</span>
+    </div>
+  </section>
+
+  <div class="rule"></div>
+
+  <section class="work" id="trabalhos">
+    <div class="work-heading">
+      <h2>Trabalhos</h2>
+      <p>Uma amostra dos quatro formatos que mais edito. Troque pelos seus cortes.</p>
+    </div>
+
+    <div class="grid-2x2">
+
+      <!-- Card 1 -->
+      <div class="video-card">
+        <!-- Troque o src abaixo pelo link do seu vídeo (mp4 ou embed) -->
+        <video controls preload="none" poster="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='800' height='500'><rect width='100%25' height='100%25' fill='%23150f10'/></svg>">
+          <source src="" type="video/mp4">
+        </video>
+        <span class="tag">Vertical</span>
+        <div class="title-bar">
+          <h3>Corte para Reels / TikTok</h3>
+          <p>Ritmo rápido, legenda dinâmica, gancho nos 3 primeiros segundos</p>
+        </div>
+      </div>
+
+      <!-- Card 2 -->
+      <div class="video-card">
+        <video controls preload="none" poster="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='800' height='500'><rect width='100%25' height='100%25' fill='%23150f10'/></svg>">
+          <source src="" type="video/mp4">
+        </video>
+        <span class="tag">VSL</span>
+        <div class="title-bar">
+          <h3>Video Sales Letter</h3>
+          <p>Estrutura de retenção pensada pra sustentar até a oferta</p>
+        </div>
+      </div>
+
+      <!-- Card 3 -->
+      <div class="video-card">
+        <video controls preload="none" poster="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='800' height='500'><rect width='100%25' height='100%25' fill='%23150f10'/></svg>">
+          <source src="" type="video/mp4">
+        </video>
+        <span class="tag">Ad Full AI</span>
+        <div class="title-bar">
+          <h3>Anúncio 100% IA</h3>
+          <p>Roteiro, voz, imagem e edição gerados e montados do zero</p>
+        </div>
+      </div>
+
+      <!-- Card 4 -->
+      <div class="video-card">
+        <video controls preload="none" poster="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='800' height='500'><rect width='100%25' height='100%25' fill='%23150f10'/></svg>">
+          <source src="" type="video/mp4">
+        </video>
+        <span class="tag">Vídeo longo</span>
+        <div class="title-bar">
+          <h3>Formato longo</h3>
+          <p>Corte, color e mixagem pra YouTube ou conteúdo completo</p>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <div class="rule"></div>
+
+  <section class="contact" id="contato">
+    <div class="contact-heading">
+      <h2>Fala comigo</h2>
+      <p>Chama no canal que for mais fácil pra você — respondo rápido em todos.</p>
+    </div>
+
+    <div class="contact-list">
+
+      <a class="contact-item" href="https://discord.com/users/643206026304290857" target="_blank" rel="noopener">
+        <svg viewBox="0 0 24 24"><path d="M20.3 4.4A19.7 19.7 0 0 0 15.7 3c-.2.4-.5.9-.7 1.3a18 18 0 0 0-6 0A9 9 0 0 0 8.3 3a19.6 19.6 0 0 0-4.6 1.4C1.4 8.8.7 13 1 17.2A19.9 19.9 0 0 0 6 19.7c.4-.6.8-1.2 1.1-1.9a12.7 12.7 0 0 1-1.8-.9l.4-.3a14 14 0 0 0 12.6 0l.4.3c-.6.3-1.2.6-1.8.9.3.7.7 1.3 1.1 1.9a19.8 19.8 0 0 0 5-2.5c.4-4.8-.7-9-3.7-12.8ZM8.7 14.6c-.9 0-1.7-.9-1.7-1.9s.7-1.9 1.7-1.9 1.7.9 1.7 1.9-.8 1.9-1.7 1.9Zm6.6 0c-.9 0-1.7-.9-1.7-1.9s.7-1.9 1.7-1.9 1.7.9 1.7 1.9-.7 1.9-1.7 1.9Z"/></svg>
+        <div>
+          <div class="c-label">Discord</div>
+          <div class="c-value">643206026304290857</div>
+        </div>
+      </a>
+
+      <a class="contact-item" href="mailto:pedroandradedeabreu@gmail.com">
+        <svg viewBox="0 0 24 24"><path d="M3 5h18a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1Zm1.7 2 7.3 5.4L19.3 7H4.7ZM4 8.4V18h16V8.4l-7.4 5.5a1 1 0 0 1-1.2 0L4 8.4Z"/></svg>
+        <div>
+          <div class="c-label">Email</div>
+          <div class="c-value">pedroandradedeabreu@gmail.com</div>
+        </div>
+      </a>
+
+      <a class="contact-item" href="https://wa.me/5561985897900" target="_blank" rel="noopener">
+        <svg viewBox="0 0 24 24"><path d="M12 2a10 10 0 0 0-8.6 15L2 22l5.2-1.4A10 10 0 1 0 12 2Zm0 18a8 8 0 0 1-4.1-1.1l-.3-.2-3 .8.8-2.9-.2-.3A8 8 0 1 1 12 20Zm4.4-6c-.2-.1-1.4-.7-1.7-.8-.2-.1-.4-.1-.6.1-.2.3-.6.8-.8 1-.1.1-.3.2-.5.1a6.5 6.5 0 0 1-1.9-1.2 7 7 0 0 1-1.3-1.6c-.1-.2 0-.4.1-.5l.4-.4.3-.4c0-.1.1-.3 0-.4-.1-.1-.6-1.4-.8-1.9-.2-.5-.4-.4-.6-.4h-.5c-.2 0-.5.1-.7.3-.2.3-1 1-1 2.3s1 2.7 1.1 2.9c.1.2 2 3 4.8 4.3.7.3 1.2.5 1.6.6.7.2 1.3.2 1.8.1.5-.1 1.4-.6 1.6-1.1.2-.5.2-1 .1-1.1-.1-.1-.3-.2-.5-.3Z"/></svg>
+        <div>
+          <div class="c-label">WhatsApp</div>
+          <div class="c-value">+55 61 98589-7900</div>
+        </div>
+      </a>
+
+      <!-- ATUALIZE o @ abaixo com seu usuário do Twitter/X -->
+      <a class="contact-item" href="https://twitter.com/SEU_USUARIO" target="_blank" rel="noopener">
+        <svg viewBox="0 0 24 24"><path d="M18.9 3H22l-7.2 8.2L23 21h-6.6l-5.1-6.7L5.3 21H2.2l7.7-8.8L1.5 3h6.8l4.6 6.1L18.9 3Zm-1.2 16h1.7L7.4 5H5.6l12.1 14Z"/></svg>
+        <div>
+          <div class="c-label">Twitter / X</div>
+          <div class="c-value">@SEU_USUARIO</div>
+        </div>
+      </a>
+
+    </div>
+  </section>
+
+</main>
+
+<footer class="wrap">
+  <span>Pedro AdeA — edição de vídeo</span>
+  <span>Brasília, Brasil</span>
+</footer>
+
+</body>
+</html>
