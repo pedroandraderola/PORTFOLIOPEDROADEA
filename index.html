@@ -301,11 +301,37 @@
     background: var(--surface);
     flex-shrink:0;
   }
-  .work-thumb iframe{
+  .work-thumb a{
+    position:absolute;
+    inset:0;
+    display:block;
+    text-decoration:none;
+  }
+  .work-thumb img{
     width:100%;
     height:100%;
-    border:0;
     display:block;
+    object-fit:cover;
+    object-position:center center;
+  }
+  .work-play{
+    position:absolute;
+    left:50%;
+    top:50%;
+    transform:translate(-50%,-50%);
+    width:46px;
+    height:46px;
+    border-radius:50%;
+    display:grid;
+    place-items:center;
+    background:rgba(0,0,0,.68);
+    border:1px solid rgba(255,255,255,.65);
+    color:#fff;
+    font-size:18px;
+    line-height:1;
+    padding-left:3px;
+    pointer-events:none;
+    box-shadow:0 4px 18px rgba(0,0,0,.35);
   }
   .work-item:hover .work-thumb{ border-color: var(--red); }
 
@@ -514,7 +540,10 @@
       <div class="work-item">
         <span class="work-num">01</span>
         <span class="work-thumb">
-          <iframe src="https://drive.google.com/file/d/1R4nxfj4FDE-NYQczwdawZ7mHlV0SwOoh/preview" allow="autoplay" loading="lazy"></iframe>
+          <a href="https://drive.google.com/file/d/1R4nxfj4FDE-NYQczwdawZ7mHlV0SwOoh/view" target="_blank" rel="noopener" aria-label="Open video">
+            <img src="https://drive.google.com/thumbnail?id=1R4nxfj4FDE-NYQczwdawZ7mHlV0SwOoh&sz=w1000" alt="Video thumbnail" loading="lazy">
+            <span class="work-play">▶</span>
+          </a>
         </span>
         <span class="work-info">
           <span class="work-tag">Vertical Video</span>
@@ -527,7 +556,10 @@
       <div class="work-item">
         <span class="work-num">02</span>
         <span class="work-thumb">
-          <iframe src="https://drive.google.com/file/d/121vCTil_TauO-XGpwV5RuOWv1uE8e9S8/preview" allow="autoplay" loading="lazy"></iframe>
+          <a href="https://drive.google.com/file/d/121vCTil_TauO-XGpwV5RuOWv1uE8e9S8/view" target="_blank" rel="noopener" aria-label="Open video">
+            <img src="https://drive.google.com/thumbnail?id=121vCTil_TauO-XGpwV5RuOWv1uE8e9S8&sz=w1000" alt="Video thumbnail" loading="lazy">
+            <span class="work-play">▶</span>
+          </a>
         </span>
         <span class="work-info">
           <span class="work-tag">Ad</span>
@@ -540,7 +572,10 @@
       <div class="work-item">
         <span class="work-num">03</span>
         <span class="work-thumb">
-          <iframe src="https://drive.google.com/file/d/12w05yqCagMz6h8ohEyGOageNZDmkumJi/preview" allow="autoplay" loading="lazy"></iframe>
+          <a href="https://drive.google.com/file/d/12w05yqCagMz6h8ohEyGOageNZDmkumJi/view" target="_blank" rel="noopener" aria-label="Open video">
+            <img src="https://drive.google.com/thumbnail?id=12w05yqCagMz6h8ohEyGOageNZDmkumJi&sz=w1000" alt="Video thumbnail" loading="lazy">
+            <span class="work-play">▶</span>
+          </a>
         </span>
         <span class="work-info">
           <span class="work-tag">Full AI Ad</span>
@@ -553,7 +588,10 @@
       <div class="work-item">
         <span class="work-num">04</span>
         <span class="work-thumb">
-          <iframe src="https://drive.google.com/file/d/1Q5rDGOGWOqHL56Quh8HoSsbLTM__S-v2/preview" allow="autoplay" loading="lazy"></iframe>
+          <a href="https://drive.google.com/file/d/1Q5rDGOGWOqHL56Quh8HoSsbLTM__S-v2/view" target="_blank" rel="noopener" aria-label="Open video">
+            <img src="https://drive.google.com/thumbnail?id=1Q5rDGOGWOqHL56Quh8HoSsbLTM__S-v2&sz=w1000" alt="Video thumbnail" loading="lazy">
+            <span class="work-play">▶</span>
+          </a>
         </span>
         <span class="work-info">
           <span class="work-tag">Full AI Ad</span>
@@ -566,7 +604,10 @@
       <div class="work-item">
         <span class="work-num">05</span>
         <span class="work-thumb">
-          <iframe src="https://drive.google.com/file/d/1gXCuqhdyk3CF4K3xSd13mUogTPK49Iy_/preview" allow="autoplay" loading="lazy"></iframe>
+          <a href="https://drive.google.com/file/d/1gXCuqhdyk3CF4K3xSd13mUogTPK49Iy_/view" target="_blank" rel="noopener" aria-label="Open video">
+            <img src="https://drive.google.com/thumbnail?id=1gXCuqhdyk3CF4K3xSd13mUogTPK49Iy_&sz=w1000" alt="Video thumbnail" loading="lazy">
+            <span class="work-play">▶</span>
+          </a>
         </span>
         <span class="work-info">
           <span class="work-tag">Full AI Ad</span>
