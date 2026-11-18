@@ -580,6 +580,32 @@ footer{padding:22px 0 28px}
 @media (prefers-reduced-motion: reduce) {
   .hero:before, .timeline-track:after, .work-list:after { animation: none !important; }
 }
+
+/* MOBILE LAYOUT FIX — the later "compact" desktop rules were overriding the
+   mobile grid (4 columns kept on phones => text squeezed into ~110px).
+   This block comes last, so it wins. Desktop is untouched. */
+@media (max-width: 720px) {
+  .work-item {
+    grid-template-columns: minmax(0, 1fr) auto !important;
+    grid-template-areas:
+      "thumb thumb"
+      "info arrow" !important;
+    column-gap: 12px !important;
+    row-gap: 14px !important;
+    align-items: start !important;
+  }
+  .work-num { display: none !important; }
+  .work-thumb { grid-area: thumb !important; width: 100% !important; max-width: 100% !important; }
+  .work-info { grid-area: info !important; min-width: 0 !important; }
+  .work-info p { max-width: 100% !important; }
+  .work-arrow { grid-area: arrow !important; }
+  .work-item:hover { padding-left: 0 !important; padding-right: 0 !important; }
+  .hero-tagline, .section-sub, .section-heading, .about-text p { max-width: 100% !important; }
+  .about-grid { grid-template-columns: minmax(0, 1fr) !important; }
+  .hero:before { right: 0 !important; }
+}
+html { overflow-x: hidden; }
+.hero { overflow-x: clip; }
 </style>
 </head>
 <body>
