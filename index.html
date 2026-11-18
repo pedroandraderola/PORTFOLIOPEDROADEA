@@ -559,6 +559,27 @@ footer{padding:22px 0 28px}
 @media(max-width:780px){section{padding:47px 0}.hero{min-height:72svh;padding-top:100px;padding-bottom:32px}.work-header{margin-bottom:20px}.work-item{padding:15px 0;gap:13px}.about-grid{gap:22px}.edit-timeline{max-width:100%}}
 @media(max-width:480px){.hero{min-height:68svh}.hero h1{font-size:clamp(56px,14vw,80px)}.work-item{padding:14px 0}.work-thumb{width:100%}.edit-timeline{gap:7px;padding:9px}.timeline-label{font-size:9px}}
 @media(prefers-reduced-motion:reduce){.timeline-track:after,.work-list:after{animation:none}}
+
+/* SAFARI / iOS RELIABILITY PATCH — content is always visible.
+   Motion must never be a prerequisite for rendering the portfolio. */
+.reveal, .reveal.in {
+  opacity: 1 !important;
+  visibility: visible !important;
+  transform: none !important;
+}
+#trabalhos, #sobre, #contato { scroll-margin-top: 88px; }
+@media (max-width: 720px) {
+  .hero { min-height: 0 !important; padding-top: 128px !important; padding-bottom: 38px !important; }
+  section { padding-top: 42px !important; padding-bottom: 42px !important; }
+  .work-list, .work-item, .work-header, .about-grid, .contact-links { opacity: 1 !important; visibility: visible !important; }
+  .nav-inner { padding: 17px 20px; }
+  .nav-links { gap: 16px; }
+  .nav-links a { font-size: 12px; }
+  .wrap { padding-left: 20px; padding-right: 20px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .hero:before, .timeline-track:after, .work-list:after { animation: none !important; }
+}
 </style>
 </head>
 <body>
@@ -802,21 +823,8 @@ footer{padding:22px 0 28px}
 <span>Video Editor — Brasília, Brazil</span>
 </footer>
 <script>
-  // Reveal simples e único por seção ao entrar na viewport — sem custo de performance.
-  if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-    const items = document.querySelectorAll('.reveal');
-    const io = new IntersectionObserver((entries) => {
-      entries.forEach(e => {
-        if (e.isIntersecting) {
-          e.target.classList.add('in');
-          io.unobserve(e.target);
-        }
-      });
-    }, { threshold: 0.15 });
-    items.forEach(i => io.observe(i));
-  } else {
-    document.querySelectorAll('.reveal').forEach(i => i.classList.add('in'));
-  }
+  // Safari-safe: projects and text are never hidden waiting for IntersectionObserver.
+  document.querySelectorAll('.reveal').forEach(el => el.classList.add('in'));
 
   // Clicar pra copiar (Email, Discord, WhatsApp) com confirmação visual breve.
   document.querySelectorAll('[data-copy]').forEach((btn) => {
