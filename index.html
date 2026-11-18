@@ -523,6 +523,42 @@ header.nav{border-bottom-color:rgba(255,83,106,.16)}
 .modal video{width:100%;max-height:77vh;object-fit:contain;background:#000;border:1px solid rgba(255,255,255,.15);border-radius:10px}
 @media(max-width:720px){.hero:before{width:50vw;right:-10%;opacity:.35}.hero:after{display:none}.work-item:hover{padding-left:0;padding-right:0}.work-thumb{aspect-ratio:16/9}}
 @media(prefers-reduced-motion:reduce){.hero:before,.hero-label:before{animation:none}.work-thumb img,.work-item,.work-play{transition:none}}
+
+/* COMPACT STUDIO EDITION — inspired by the user's original portfolio motion language */
+:root{--compact-line:rgba(255,255,255,.11)}
+section{padding:64px 0}
+.hero{min-height:min(740px,84svh);padding-top:112px;padding-bottom:42px}
+.hero-label{margin-bottom:12px}
+.hero h1{font-size:clamp(58px,10vw,116px)}
+.hero-tagline{margin-top:18px;line-height:1.52}
+.hero-ctas{margin-top:25px}
+.scroll-cue{margin-top:35px}
+.work-header{margin-bottom:27px;align-items:end}
+.section-sub{margin-top:12px}
+.work-item{padding:17px 0;gap:19px;grid-template-columns:36px 156px 1fr auto}
+.work-thumb{width:156px}
+.about-grid{margin-top:28px;gap:35px}
+.about-text p{margin-bottom:12px;line-height:1.6}
+.contact-links{margin-top:24px}
+.contact-row{padding:15px 0}
+footer{padding:22px 0 28px}
+.work-item:hover{padding-left:8px;padding-right:8px}
+/* original-inspired editing timeline */
+.edit-timeline{position:relative;display:flex;align-items:center;gap:12px;max-width:490px;margin-top:31px;padding:11px 14px;border:1px solid rgba(255,83,106,.20);border-radius:7px;background:linear-gradient(110deg,rgba(255,83,106,.075),rgba(255,255,255,.018));overflow:hidden}
+.timeline-label{font-size:10px;color:#f3f0f0;letter-spacing:.14em;white-space:nowrap}
+.timeline-track{height:20px;display:flex;align-items:center;gap:3px;flex:1;position:relative}
+.timeline-track i{display:block;flex:1;height:8px;border-radius:2px;background:rgba(255,83,106,.20);border:1px solid rgba(255,83,106,.22)}
+.timeline-track i:nth-child(2),.timeline-track i:nth-child(5){height:14px;background:rgba(255,83,106,.40)}
+.timeline-track:after{content:'';position:absolute;top:-4px;bottom:-4px;width:2px;background:#fff;box-shadow:0 0 10px #ff536a;left:0;animation:timelineScrub 6s ease-in-out infinite alternate}
+@keyframes timelineScrub{to{left:calc(100% - 2px)}}
+.timeline-time{font-family:monospace;font-size:10px;color:var(--red-bright);white-space:nowrap}
+/* fine technical motion accents */
+.work-list{position:relative}
+.work-list:after{content:'';position:absolute;top:0;left:0;width:100%;height:1px;background:linear-gradient(90deg,transparent,var(--red-bright),transparent);opacity:.6;transform-origin:left;animation:scanRail 8s ease-in-out infinite}
+@keyframes scanRail{0%,100%{transform:scaleX(.06);opacity:.1}50%{transform:scaleX(1);opacity:.65}}
+@media(max-width:780px){section{padding:47px 0}.hero{min-height:72svh;padding-top:100px;padding-bottom:32px}.work-header{margin-bottom:20px}.work-item{padding:15px 0;gap:13px}.about-grid{gap:22px}.edit-timeline{max-width:100%}}
+@media(max-width:480px){.hero{min-height:68svh}.hero h1{font-size:clamp(56px,14vw,80px)}.work-item{padding:14px 0}.work-thumb{width:100%}.edit-timeline{gap:7px;padding:9px}.timeline-label{font-size:9px}}
+@media(prefers-reduced-motion:reduce){.timeline-track:after,.work-list:after{animation:none}}
 </style>
 </head>
 <body>
@@ -551,6 +587,7 @@ header.nav{border-bottom-color:rgba(255,83,106,.16)}
 <a class="cta" href="#trabalhos">See the work →</a>
 <a class="cta" href="#contato">Get in touch →</a>
 </div>
+<div class="edit-timeline" aria-label="Animated editing timeline"><span class="timeline-label">EDIT / PLAY</span><span class="timeline-track" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i></span><span class="timeline-time">00:00:05:00</span></div>
 <a class="scroll-cue" href="#trabalhos">
 <span class="line"></span>
       Scroll to see
